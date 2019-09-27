@@ -1,0 +1,5 @@
+SELECT ?github ?lannuaire WHERE {
+  ?item wdt:P2037 ?github;
+    wdt:P6671 ?lannuaire.
+}
+ORDER BY (?lannuaire)
