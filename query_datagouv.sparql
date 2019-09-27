@@ -1,0 +1,5 @@
+SELECT ?github ?datagouv WHERE {
+  ?item wdt:P2037 ?github;
+    wdt:P3206 ?datagouv
+}
+ORDER BY (?datagouv)
