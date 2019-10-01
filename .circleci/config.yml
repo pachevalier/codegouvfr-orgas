@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  update-and-publish:
+    docker:
+      - image:  circleci/python:3.6
+      
+    steps: 
+      - checkout
+      - run:
+          name: Get the data
+          command: |
+            ./getdata.sh
+      - run:
+          name: Publish on data.gouv
+          command: |
+            ./upload.sh
+
+workflows:
+    version: 2
+    weekly:
+        jobs:
+            - update-and-publish
+        triggers:
+            - schedule:
+                cron: 0 3 * * *
+                filters:
+                    branches:
+                        only:
+                            - master
