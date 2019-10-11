@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{bash}
+curl -G https://query.wikidata.org/bigdata/namespace/wdq/sparql --data-urlencode query="$(< query_datagouv.sparql)" -H 'Accept: text/csv' > datagouv.csv
+curl -G https://query.wikidata.org/bigdata/namespace/wdq/sparql --data-urlencode query="$(< query_lannuaire.sparql)" -H 'Accept: text/csv' > lannuaire.csv
+curl -G https://raw.githubusercontent.com/etalab/data-codes-sources-fr/master/data/organisations/csv/all.csv > orgas_code_gouv.csv
+```
+
+```{r}
+library(tidyverse)
+read_csv("orgas_code_gouv.csv") %>%
+  glimpse()
+```
+
+```{r}
+read_csv(file = "orgas_code_gouv.csv") %>%
+  filter(plateforme == "GitHub") %>%
+  select(login) %>%
+  inner_join(
+    y = read_csv("datagouv.csv"),
+    by = c("login" = "github")
+    ) %>%
+  write_csv("codegouv_datagouv.csv")
+```
+
+```{bash}
+set -e
+export api="https://www.data.gouv.fr/api/1"
+export dataset_id="5d92d6046f444110a3a545e3"
+export api_key=$API_KEY
+curl "$api/datasets/$dataset_id/resources/d35a98f4-4e89-4891-8029-bb9495f0b74f/upload/" -F "file=@codegouv_datagouv.csv" -H "X-API-KEY:$api_key"
+```
+
