@@ -28,7 +28,7 @@ jobs:
 
 workflows:
     version: 2
-    daily:
+    weekly:
         jobs:
             - join-and-publish
         triggers:
