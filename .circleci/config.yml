@@ -1,5 +1,16 @@
 version: 2
 jobs:
+  join-and-publish:
+    docker:
+      - image: colinfay/r-ci-tidyverse:3.6.0
+      
+    steps:
+      - checkout
+      - run:
+          name: All
+          command: |
+            R -e "rmarkdown::render('index.Rmd',output_file='index.html')"
+            
   update-and-publish:
     docker:
       - image:  circleci/python:3.6
@@ -17,9 +28,9 @@ jobs:
 
 workflows:
     version: 2
-    weekly:
+    daily:
         jobs:
-            - update-and-publish
+            - join-and-publish
         triggers:
             - schedule:
                 cron: 0 3 * * *
